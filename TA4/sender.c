@@ -15,9 +15,10 @@ void* receive_msg(void *param)
         mq_receive(mq1, buff, 32, NULL);
         printf("Message received: %s\n", buff);
         if( strncmp(buff, "exit", strlen("exit")) == 0){
-            break;
+            exit(EXIT_SUCCESS);
         }
     }
+    return NULL;    
 }
 
 int main(int argc, char *argv[])

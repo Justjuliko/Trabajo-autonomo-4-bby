@@ -5,9 +5,10 @@
 #include <mqueue.h>
 #include <pthread.h>
 
+mqd_t mq1;
+
 void* send_msg(void *param)
 {
-    mqd_t mq1 = mq_open("/mq1", O_WRONLY);
     char str[64];
 
     while (1)
@@ -17,7 +18,7 @@ void* send_msg(void *param)
         mq_send(mq1, str, strlen(str) + 1, 0);
         if (strncmp(str, "exit", strlen("exit")) == 0)
         {
-            break;
+            exit(EXIT_SUCCESS);
         }
     }
 }
@@ -25,7 +26,6 @@ void* send_msg(void *param)
 int main(int argc, char *argv[])
 {
     mqd_t mq;
-    mqd_t mq1;
 
     struct mq_attr attr;
     attr.mq_flags = 0;
@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     attr1.mq_curmsgs = 0;
 
     mq = mq_open("/mq0", O_RDONLY | O_CREAT, 0644, &attr);
-    mq1 = mq_open("/mq1", O_RDONLY | O_CREAT, 0644, &attr1);
+    mq1 = mq_open("/mq1", O_WRONLY | O_CREAT, 0644, &attr1);
     char buff[32];
 
     pthread_t threadID;
